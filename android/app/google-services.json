@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "4424271195",
+    "firebase_url": "https://softly-8f8b0-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "softly-8f8b0",
+    "storage_bucket": "softly-8f8b0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:4424271195:android:af4651e3a901dc696d467e",
+        "android_client_info": {
+          "package_name": "com.softly.totodo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "4424271195-c1t68pbbf4gsu86u76qpv3rugl92kph0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.softly.totodo",
+            "certificate_hash": "a709f9be11aba27fed3df366335138ab8d91702d"
+          }
+        },
+        {
+          "client_id": "4424271195-epre7gcl1285logn6hcp2gt5k09cf9c8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBIOforuTT_BD6fWv8LhacGNv6rM_wbVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "4424271195-epre7gcl1285logn6hcp2gt5k09cf9c8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "4424271195-12q9ei17rtqu1ki0j37pi33pb80hkllu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.softly.totodo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
