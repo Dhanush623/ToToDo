@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:restart_app/restart_app.dart';
 import 'package:totodo/src/constants/constants.dart';
 import 'package:totodo/src/helper/storage_helper.dart';
 import 'package:totodo/src/helper/theme_manager.dart';
@@ -54,8 +52,6 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
       });
     }
   }
-
-  Future<void> _handleSignOut() => GoogleSignIn().disconnect();
 
   changeNotificationPermission() async {
     openAppSettings();
@@ -162,16 +158,6 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
                 changeNotificationPermission();
               },
             ),
-          ),
-          ListTile(
-            title: const Text(
-              Constants.logout,
-              style: TextStyle(fontSize: 18),
-            ),
-            onTap: () {
-              _handleSignOut();
-              Restart.restartApp();
-            },
           ),
         ],
       ),

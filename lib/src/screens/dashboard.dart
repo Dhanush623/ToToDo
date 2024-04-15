@@ -31,12 +31,12 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<void> initializeApp() async {
-    FirebaseAuth.instance.authStateChanges().listen((User? loggedUser) {
+    FirebaseAuth.instance.authStateChanges().listen((User? loggedUser) async {
       if (loggedUser == null) {
         setState(() {
           isLoading = false;
         });
-        signInWithGoogle();
+        await signInWithGoogle();
       } else {
         setState(() {
           user = loggedUser;
@@ -245,11 +245,17 @@ class _DashboardState extends State<Dashboard> {
                 ),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      foregroundImage: NetworkImage(
-                        user?.photoURL ?? '',
-                      ),
-                    ),
+                    user?.photoURL == null
+                        ? CircleAvatar(
+                            child: Text(
+                              "${user?.displayName!.substring(0, 1)}",
+                            ),
+                          )
+                        : CircleAvatar(
+                            foregroundImage: NetworkImage(
+                              user?.photoURL ?? '',
+                            ),
+                          ),
                     const SizedBox(
                       width: 10,
                     ),
@@ -310,6 +316,7 @@ class _DashboardState extends State<Dashboard> {
 
   Widget buildTodoItem(BuildContext context, int index) {
     return CheckboxListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
       value: toTodoList[index].isFinished,
       onChanged: (bool? value) {
         updateStatus(
