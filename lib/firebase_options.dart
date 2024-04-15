@@ -54,7 +54,8 @@ class DefaultFirebaseOptions {
     appId: '1:4424271195:android:af4651e3a901dc696d467e',
     messagingSenderId: '4424271195',
     projectId: 'softly-8f8b0',
-    databaseURL: 'https://softly-8f8b0-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://softly-8f8b0-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'softly-8f8b0.appspot.com',
   );
 
@@ -63,10 +64,13 @@ class DefaultFirebaseOptions {
     appId: '1:4424271195:ios:59a1e141c1a6ec586d467e',
     messagingSenderId: '4424271195',
     projectId: 'softly-8f8b0',
-    databaseURL: 'https://softly-8f8b0-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://softly-8f8b0-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'softly-8f8b0.appspot.com',
-    androidClientId: '4424271195-c1t68pbbf4gsu86u76qpv3rugl92kph0.apps.googleusercontent.com',
-    iosClientId: '4424271195-12q9ei17rtqu1ki0j37pi33pb80hkllu.apps.googleusercontent.com',
-    iosBundleId: 'com.softly.totodo',
+    androidClientId:
+        '4424271195-c1t68pbbf4gsu86u76qpv3rugl92kph0.apps.googleusercontent.com',
+    iosClientId:
+        '4424271195-12q9ei17rtqu1ki0j37pi33pb80hkllu.apps.googleusercontent.com',
+    iosBundleId: 'com.softly.todo',
   );
 }
