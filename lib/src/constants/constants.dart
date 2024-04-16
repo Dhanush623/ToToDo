@@ -20,10 +20,14 @@ class Constants {
   static const String unableToDeleteTodo = "Unable to delete ToDo";
   static const String todoDetails = "Enter ToDo Details";
   static const String addTodoDetails = "Add ToDo Details";
+  static const String updateTodoDetails = "Update ToDo Details";
   static const String copyrightLabel = "Copyright © ";
   static const String dateFormat = "dd MMM yyyy";
   static const String edit = "Edit";
   static const String delete = "Delete";
+  static const String explore = "To Explore To ToDo";
+  static const String nothingToTodo = "No Things To ToDo";
+  static const String signInGoogle = "Sign In With GOOGLE";
   static const String userAvatar =
       "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes-thumbnail.png";
 }
