@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,16 +8,6 @@ import 'package:totodo/src/constants/constants.dart';
 import 'package:totodo/src/helper/theme_manager.dart';
 import 'package:totodo/src/screens/dashboard.dart';
 import 'firebase_options.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-
-const List<String> scopes = <String>[
-  'email',
-  'https://www.googleapis.com/auth/contacts.readonly',
-];
-
-GoogleSignIn _googleSignIn = GoogleSignIn(
-  scopes: scopes,
-);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

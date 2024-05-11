@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:totodo/src/constants/constants.dart';
 import 'package:totodo/src/helper/storage_helper.dart';
 import 'package:totodo/src/helper/theme_manager.dart';
+import 'package:totodo/src/screens/dashboard.dart';
+import 'package:totodo/src/widgets/show_toast.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key, required this.user});
@@ -71,6 +73,27 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
       setState(() {
         isDarkTheme = false;
       });
+    }
+  }
+
+  Future<void> signOutWithGoogle() async {
+    try {
+      await FirebaseAuth.instance.signOut().then(
+            (value) => {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) => const Dashboard(
+                    isSignOut: true,
+                  ),
+                ),
+                (Route<dynamic> route) => false,
+              ),
+            },
+          );
+    } catch (error) {
+      showToast(
+        Constants.unableToAddTodo,
+      );
     }
   }
 
@@ -158,6 +181,16 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
                 changeNotificationPermission();
               },
             ),
+          ),
+          ListTile(
+            title: const Text(
+              Constants.logout,
+              style: TextStyle(fontSize: 18),
+            ),
+            trailing: const Icon(
+              Icons.logout,
+            ),
+            onTap: signOutWithGoogle,
           ),
         ],
       ),

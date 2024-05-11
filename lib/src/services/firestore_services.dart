@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:totodo/src/constants/collection_constants.dart';
 import 'package:totodo/src/constants/constants.dart';
-import 'package:totodo/src/models/Todo.dart';
+import 'package:totodo/src/models/todo.dart';
 import 'package:totodo/src/widgets/show_toast.dart';
 
 Future<List<Todo>> getToTodoList(String uid) async {

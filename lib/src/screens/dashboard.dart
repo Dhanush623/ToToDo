@@ -5,14 +5,19 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 import 'package:totodo/src/constants/constants.dart';
-import 'package:totodo/src/models/Todo.dart';
-import 'package:totodo/src/screens/settings/settings.dart' as TodoSettings;
+import 'package:totodo/src/models/todo.dart';
+import 'package:totodo/src/screens/login/login.dart';
+import 'package:totodo/src/screens/settings/settings.dart' as todo_settings;
 import 'package:totodo/src/services/firestore_services.dart';
+import 'package:totodo/src/widgets/custom_elevated_button.dart';
+import 'package:totodo/src/widgets/custom_icon_button.dart';
+import 'package:totodo/src/widgets/custom_text_field.dart';
 import 'package:totodo/src/widgets/show_toast.dart';
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+  const Dashboard({super.key, this.isSignOut});
 
+  final bool? isSignOut;
   @override
   State<Dashboard> createState() => _DashboardState();
 }
@@ -21,23 +26,49 @@ class _DashboardState extends State<Dashboard> {
   User? user;
   bool isCurrentUser = false;
   bool isLoading = true;
+  bool isUserSignedIn = true;
   List<Todo> toTodoList = [];
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   @override
   void initState() {
     super.initState();
-    initializeApp();
+    _firebaseMessaging.requestPermission();
+    _requestAndPrintFCMToken();
+    _configureFirebaseMessaging();
+    debugPrint("widget.isSignOu ${widget.isSignOut}");
+    if (widget.isSignOut == null || widget.isSignOut == false) {
+      initializeApp();
+    }
+  }
+
+  Future<void> _requestAndPrintFCMToken() async {
+    final String? token = await _firebaseMessaging.getToken();
+    debugPrint('FCM Token: $token');
+  }
+
+  Future<void> _configureFirebaseMessaging() async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      debugPrint(message.toString());
+      _showNotification(message);
+    });
   }
 
   Future<void> initializeApp() async {
+    debugPrint(
+        "FirebaseAuth.instance.currentUser ${FirebaseAuth.instance.currentUser}");
     FirebaseAuth.instance.authStateChanges().listen((User? loggedUser) async {
-      if (loggedUser == null) {
+      if (loggedUser == null && mounted) {
         setState(() {
           isLoading = false;
         });
-        await signInWithGoogle();
-      } else {
+        UserCredential? signedUser = await signInWithGoogle();
+        if (signedUser == null) {
+          setState(() {
+            isUserSignedIn = false;
+          });
+        }
+      } else if (mounted) {
         setState(() {
           user = loggedUser;
           isLoading = false;
@@ -48,22 +79,58 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  Future getTodoList(User loggedUser) async {
-    List<Todo> todoList = await getToTodoList(loggedUser.email ?? '');
-    setState(() {
-      toTodoList = todoList;
-    });
+  Future<void> signIn() async {
+    UserCredential? signedUser = await signInWithGoogle();
+    debugPrint("signedUser $signedUser");
+    if (signedUser != null) {
+      debugPrint(
+          "FirebaseAuth.instance.currentUser ${FirebaseAuth.instance.currentUser}");
+      if (FirebaseAuth.instance.currentUser == null && mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      } else if (mounted) {
+        setState(() {
+          user = FirebaseAuth.instance.currentUser;
+          isLoading = false;
+          isCurrentUser = true;
+        });
+        getTodoList(FirebaseAuth.instance.currentUser);
+      }
+      if (mounted) {
+        setState(() {
+          isUserSignedIn = false;
+        });
+      }
+    } else if (mounted) {
+      setState(() {
+        isLoading = false;
+        isCurrentUser = true;
+      });
+    }
   }
 
-  Future<UserCredential> signInWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  Future getTodoList(User? loggedUser) async {
+    List<Todo> todoList = await getToTodoList(loggedUser?.email ?? '');
+    if (mounted) {
+      setState(() {
+        toTodoList = todoList;
+      });
+    }
+  }
 
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
+  Future<UserCredential?> signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) {
+      return null;
+    }
+
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
 
     final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
     );
 
     return await FirebaseAuth.instance.signInWithCredential(credential);
@@ -122,30 +189,24 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
                 const SizedBox(height: 10.0),
-                TextField(
-                  controller: textEditingController,
-                  decoration: const InputDecoration(
-                    hintText: Constants.todoDetails,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(
-                          25,
-                        ),
-                      ),
-                    ),
-                  ),
+                customTextInput(
+                  textEditingController,
+                  null,
+                  null,
+                  (value) {},
+                  null,
+                  Constants.todoDetails,
+                  true,
                 ),
                 const SizedBox(height: 10.0),
-                ElevatedButton(
-                  onPressed: () {
+                customElevatedButton(
+                  Constants.addToTodo,
+                  () {
                     Navigator.pop(
                       context,
                       textEditingController.text,
                     );
                   },
-                  child: const Text(
-                    Constants.addToTodo,
-                  ),
                 ),
               ],
             ),
@@ -178,38 +239,32 @@ class _DashboardState extends State<Dashboard> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 const Text(
-                  Constants.addTodoDetails,
+                  Constants.updateTodoDetails,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20.0,
                   ),
                 ),
                 const SizedBox(height: 10.0),
-                TextField(
-                  controller: textEditingController,
-                  decoration: const InputDecoration(
-                    hintText: Constants.todoDetails,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(
-                          25,
-                        ),
-                      ),
-                    ),
-                  ),
+                customTextInput(
+                  textEditingController,
+                  null,
+                  null,
+                  (value) {},
+                  null,
+                  Constants.todoDetails,
+                  true,
                 ),
                 const SizedBox(height: 10.0),
-                ElevatedButton(
-                  onPressed: () {
+                customElevatedButton(
+                  Constants.updateToTodo,
+                  () {
                     Navigator.pop(
                       context,
                       textEditingController.text,
                     );
                   },
-                  child: const Text(
-                    Constants.updateToTodo,
-                  ),
-                ),
+                )
               ],
             ),
           ),
@@ -266,51 +321,63 @@ class _DashboardState extends State<Dashboard> {
                       ),
                     ),
                     const Spacer(),
-                    IconButton(
-                      onPressed: () {
+                    customIconButton(
+                      Icons.settings,
+                      Constants.settings,
+                      () => {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => TodoSettings.Settings(
+                            builder: (context) => todo_settings.Settings(
                               user: user!,
                             ),
                           ),
-                        );
+                        )
                       },
-                      icon: const Icon(
-                        Icons.settings,
-                      ),
-                      tooltip: Constants.settings,
                     ),
                   ],
                 ),
               ),
             )
           : null,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showAddBottomSheet(context);
-        },
-        child: IconButton(
-          onPressed: () {
-            _showAddBottomSheet(context);
-          },
-          icon: const Icon(
-            Icons.add,
-          ),
-        ),
-      ),
-      body: user == null
-          ? Container()
-          : ListView.builder(
-              itemCount: toTodoList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return buildTodoItem(
-                  context,
-                  index,
-                );
+      floatingActionButton: user != null
+          ? FloatingActionButton(
+              onPressed: () {
+                _showAddBottomSheet(context);
               },
-            ),
+              child: IconButton(
+                onPressed: () {
+                  _showAddBottomSheet(context);
+                },
+                icon: const Icon(
+                  Icons.add,
+                ),
+              ),
+            )
+          : null,
+      body: user == null
+          ? Login(
+              handle: signIn,
+            )
+          : toTodoList.isEmpty
+              ? const Center(
+                  child: Text(
+                    Constants.nothingToTodo,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: toTodoList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return buildTodoItem(
+                      context,
+                      index,
+                    );
+                  },
+                ),
     );
   }
 
@@ -338,25 +405,21 @@ class _DashboardState extends State<Dashboard> {
       ),
       secondary: Wrap(
         children: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              _showUpdateBottomSheet(
-                context,
-                toTodoList[index],
-              );
-            },
-            tooltip: Constants.edit,
+          customIconButton(
+            Icons.edit,
+            Constants.edit,
+            () => _showUpdateBottomSheet(
+              context,
+              toTodoList[index],
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              deleteTodoItem(
-                toTodoList[index].id,
-              );
-            },
-            tooltip: Constants.delete,
-          ),
+          customIconButton(
+            Icons.delete,
+            Constants.delete,
+            () => deleteTodoItem(
+              toTodoList[index].id,
+            ),
+          )
         ],
       ),
     );
