@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 import 'package:totodo/src/constants/constants.dart';
 import 'package:totodo/src/models/todo.dart';
+import 'package:totodo/src/screens/login/login.dart';
 import 'package:totodo/src/screens/settings/settings.dart' as todo_settings;
 import 'package:totodo/src/services/firestore_services.dart';
 import 'package:totodo/src/widgets/custom_elevated_button.dart';
@@ -14,8 +15,9 @@ import 'package:totodo/src/widgets/custom_text_field.dart';
 import 'package:totodo/src/widgets/show_toast.dart';
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+  const Dashboard({super.key, this.isSignOut});
 
+  final bool? isSignOut;
   @override
   State<Dashboard> createState() => _DashboardState();
 }
@@ -31,12 +33,32 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    initializeApp();
+    _firebaseMessaging.requestPermission();
+    _requestAndPrintFCMToken();
+    _configureFirebaseMessaging();
+    debugPrint("widget.isSignOu ${widget.isSignOut}");
+    if (widget.isSignOut == null || widget.isSignOut == false) {
+      initializeApp();
+    }
+  }
+
+  Future<void> _requestAndPrintFCMToken() async {
+    final String? token = await _firebaseMessaging.getToken();
+    debugPrint('FCM Token: $token');
+  }
+
+  Future<void> _configureFirebaseMessaging() async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      debugPrint(message.toString());
+      _showNotification(message);
+    });
   }
 
   Future<void> initializeApp() async {
+    debugPrint(
+        "FirebaseAuth.instance.currentUser ${FirebaseAuth.instance.currentUser}");
     FirebaseAuth.instance.authStateChanges().listen((User? loggedUser) async {
-      if (loggedUser == null) {
+      if (loggedUser == null && mounted) {
         setState(() {
           isLoading = false;
         });
@@ -46,7 +68,7 @@ class _DashboardState extends State<Dashboard> {
             isUserSignedIn = false;
           });
         }
-      } else {
+      } else if (mounted) {
         setState(() {
           user = loggedUser;
           isLoading = false;
@@ -57,11 +79,44 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  Future getTodoList(User loggedUser) async {
-    List<Todo> todoList = await getToTodoList(loggedUser.email ?? '');
-    setState(() {
-      toTodoList = todoList;
-    });
+  Future<void> signIn() async {
+    UserCredential? signedUser = await signInWithGoogle();
+    debugPrint("signedUser $signedUser");
+    if (signedUser != null) {
+      debugPrint(
+          "FirebaseAuth.instance.currentUser ${FirebaseAuth.instance.currentUser}");
+      if (FirebaseAuth.instance.currentUser == null && mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      } else if (mounted) {
+        setState(() {
+          user = FirebaseAuth.instance.currentUser;
+          isLoading = false;
+          isCurrentUser = true;
+        });
+        getTodoList(FirebaseAuth.instance.currentUser);
+      }
+      if (mounted) {
+        setState(() {
+          isUserSignedIn = false;
+        });
+      }
+    } else if (mounted) {
+      setState(() {
+        isLoading = false;
+        isCurrentUser = true;
+      });
+    }
+  }
+
+  Future getTodoList(User? loggedUser) async {
+    List<Todo> todoList = await getToTodoList(loggedUser?.email ?? '');
+    if (mounted) {
+      setState(() {
+        toTodoList = todoList;
+      });
+    }
   }
 
   Future<UserCredential?> signInWithGoogle() async {
@@ -301,25 +356,9 @@ class _DashboardState extends State<Dashboard> {
             )
           : null,
       body: user == null
-          ? isUserSignedIn
-              ? Container()
-              : Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        Constants.explore,
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
-                      ),
-                      ElevatedButton(
-                        onPressed: signInWithGoogle,
-                        child: const Text(Constants.signInGoogle),
-                      )
-                    ],
-                  ),
-                )
+          ? Login(
+              handle: signIn,
+            )
           : toTodoList.isEmpty
               ? const Center(
                   child: Text(

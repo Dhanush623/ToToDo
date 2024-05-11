@@ -9,11 +9,6 @@ import 'package:totodo/src/helper/theme_manager.dart';
 import 'package:totodo/src/screens/dashboard.dart';
 import 'firebase_options.dart';
 
-const List<String> scopes = <String>[
-  'email',
-  'https://www.googleapis.com/auth/contacts.readonly',
-];
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
