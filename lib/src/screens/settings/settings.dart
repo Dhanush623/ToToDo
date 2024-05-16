@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:totodo/src/constants/constants.dart';
 import 'package:totodo/src/helper/storage_helper.dart';
 import 'package:totodo/src/helper/theme_manager.dart';
-import 'package:totodo/src/screens/dashboard.dart';
+import 'package:totodo/src/screens/login/login.dart';
 import 'package:totodo/src/widgets/show_toast.dart';
 
 class Settings extends StatefulWidget {
@@ -78,13 +79,12 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
 
   Future<void> signOutWithGoogle() async {
     try {
+      await GoogleSignIn().signOut();
       await FirebaseAuth.instance.signOut().then(
-            (value) => {
+            (value) async => {
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
-                  builder: (context) => const Dashboard(
-                    isSignOut: true,
-                  ),
+                  builder: (context) => const Login(),
                 ),
                 (Route<dynamic> route) => false,
               ),
@@ -110,14 +110,16 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text(
-              Constants.todo.toUpperCase(),
-              style: const TextStyle(
+            const Text(
+              Constants.todo,
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Text("${Constants.copyrightLabel}${DateTime.now().year} "),
+            Text(
+              "${Constants.copyrightLabel}${DateTime.now().year} ",
+            ),
           ],
         ),
       ),
