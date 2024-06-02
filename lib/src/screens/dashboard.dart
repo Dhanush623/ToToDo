@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:totodo/src/constants/constants.dart';
+import 'package:totodo/src/helper/analytics_helper.dart';
 import 'package:totodo/src/models/todo.dart';
 import 'package:totodo/src/screens/settings/settings.dart' as todo_settings;
 import 'package:totodo/src/services/firestore_services.dart';
@@ -32,6 +33,10 @@ class _DashboardState extends State<Dashboard> {
     _requestAndPrintFCMToken();
     _configureFirebaseMessaging();
     initializeApp();
+    addScreenViewTracking(
+      widget.runtimeType.toString(),
+      "Dashboard",
+    );
   }
 
   Future<void> _requestAndPrintFCMToken() async {
@@ -144,6 +149,21 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
+  gotoSettings() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => todo_settings.Settings(
+          user: user!,
+        ),
+      ),
+    );
+    User updatedUser = FirebaseAuth.instance.currentUser!;
+    setState(() {
+      user = updatedUser;
+    });
+  }
+
   void _showUpdateBottomSheet(BuildContext context, Todo todo) async {
     TextEditingController textEditingController =
         TextEditingController(text: todo.name);
@@ -225,7 +245,9 @@ class _DashboardState extends State<Dashboard> {
                     user?.photoURL == null
                         ? CircleAvatar(
                             child: Text(
-                              "${user?.displayName!.substring(0, 1)}",
+                              user?.displayName == null
+                                  ? "${user?.email!.substring(0, 1).toUpperCase()}"
+                                  : "${user?.displayName!.substring(0, 1)}",
                             ),
                           )
                         : CircleAvatar(
@@ -237,7 +259,7 @@ class _DashboardState extends State<Dashboard> {
                       width: 10,
                     ),
                     Text(
-                      "${Constants.hiLabel}${user?.displayName}",
+                      "${Constants.hiLabel} ${user?.displayName ?? user?.email}",
                       style: const TextStyle(
                         fontSize: 20,
                       ),
@@ -246,16 +268,7 @@ class _DashboardState extends State<Dashboard> {
                     customIconButton(
                       Icons.settings,
                       Constants.settings,
-                      () => {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => todo_settings.Settings(
-                              user: user!,
-                            ),
-                          ),
-                        )
-                      },
+                      () => {gotoSettings()},
                     ),
                   ],
                 ),

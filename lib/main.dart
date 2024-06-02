@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:totodo/src/constants/constants.dart';
+import 'package:totodo/src/helper/analytics_helper.dart';
 import 'package:totodo/src/helper/theme_manager.dart';
 import 'package:totodo/src/screens/dashboard.dart';
 import 'package:totodo/src/screens/login/login.dart';
@@ -30,6 +31,7 @@ void main() async {
   var initializationSettings =
       InitializationSettings(android: initializationSettingsAndroid);
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  await logAppOpen();
   runApp(const MyApp());
 }
 
