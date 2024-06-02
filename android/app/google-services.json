@@ -95,11 +95,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "4424271195-5bjpqsc9gl06s5irho66oik76sm0ovdv.apps.googleusercontent.com",
+          "client_id": "4424271195-bkkeiebnastm8d23jetlq4f6u4v1qhsf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.softly.todo",
-            "certificate_hash": "1dddaa9916638cc7ac93947749db159f3dd2d728"
+            "certificate_hash": "3f6171c63b82e3a797235cdd37f91232b5a2d103"
           }
         },
         {
@@ -139,11 +139,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "4424271195-dpibiqo19tpf2iri886v4mapog8v3bot.apps.googleusercontent.com",
+          "client_id": "4424271195-8msf0cnpc8jvoc0i2t8ggic4890dj0ni.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.softly.totodo",
-            "certificate_hash": "1dddaa9916638cc7ac93947749db159f3dd2d728"
+            "certificate_hash": "3f6171c63b82e3a797235cdd37f91232b5a2d103"
           }
         },
         {

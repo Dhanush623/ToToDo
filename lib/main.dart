@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:totodo/src/constants/constants.dart';
 import 'package:totodo/src/helper/theme_manager.dart';
 import 'package:totodo/src/screens/dashboard.dart';
+import 'package:totodo/src/screens/login/login.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -34,7 +36,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -43,11 +44,15 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: Constants.todo,
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.blue,
+            ),
             useMaterial3: true,
           ),
           debugShowCheckedModeBanner: false,
-          home: const Dashboard(),
+          home: FirebaseAuth.instance.currentUser == null
+              ? const Login()
+              : const Dashboard(),
           themeMode: themeManager.themeMode,
           darkTheme: ThemeData.dark(),
         );

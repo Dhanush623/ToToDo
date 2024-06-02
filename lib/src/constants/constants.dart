@@ -20,6 +20,7 @@ class Constants {
   static const String unableToDeleteTodo = "Unable to delete ToDo";
   static const String todoDetails = "Enter ToDo Details";
   static const String addTodoDetails = "Add ToDo Details";
+  static const String enterNotes = "Enter Notes";
   static const String updateTodoDetails = "Update ToDo Details";
   static const String copyrightLabel = "Copyright © ";
   static const String dateFormat = "dd MMM yyyy";
@@ -27,7 +28,7 @@ class Constants {
   static const String delete = "Delete";
   static const String explore = "Welcome To ToDo";
   static const String exploreMessage =
-      "To explore ToDo application need to sign with email id";
+      "To start using the ToDo app, you'll need to sign up using your email address.";
   static const String nothingToTodo = "No Things To ToDo";
   static const String signInGoogle = "Sign In With Google";
   static const String userAvatar =
@@ -37,4 +38,9 @@ class Constants {
   static const String todoPrivacyPolicy =
       "https://dhanush623.github.io/todo_privacy_policy.html";
   static const String termsConditions = "Terms & Conditions";
+  static const String unableToSignIn = "Unable to Sign in";
+  static const String yes = "Yes";
+  static const String no = "No";
+  static const String deleteMessage =
+      "Are you sure you want to delete this item?";
 }

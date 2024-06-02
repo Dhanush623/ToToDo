@@ -28,7 +28,11 @@ class TermsAndConditions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text(Constants.termsConditions)),
+      appBar: AppBar(
+        title: const Text(
+          Constants.termsConditions,
+        ),
+      ),
       body: WebViewWidget(controller: controller),
     );
   }

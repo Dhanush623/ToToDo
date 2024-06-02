@@ -2,31 +2,26 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:intl/intl.dart';
 import 'package:totodo/src/constants/constants.dart';
 import 'package:totodo/src/models/todo.dart';
-import 'package:totodo/src/screens/login/login.dart';
 import 'package:totodo/src/screens/settings/settings.dart' as todo_settings;
 import 'package:totodo/src/services/firestore_services.dart';
 import 'package:totodo/src/widgets/custom_elevated_button.dart';
 import 'package:totodo/src/widgets/custom_icon_button.dart';
 import 'package:totodo/src/widgets/custom_text_field.dart';
+import 'package:totodo/src/widgets/custom_todo_item.dart';
 import 'package:totodo/src/widgets/show_toast.dart';
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({super.key, this.isSignOut});
+  const Dashboard({super.key});
 
-  final bool? isSignOut;
   @override
   State<Dashboard> createState() => _DashboardState();
 }
 
 class _DashboardState extends State<Dashboard> {
   User? user;
-  bool isCurrentUser = false;
   bool isLoading = true;
-  bool isUserSignedIn = true;
   List<Todo> toTodoList = [];
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
@@ -36,10 +31,7 @@ class _DashboardState extends State<Dashboard> {
     _firebaseMessaging.requestPermission();
     _requestAndPrintFCMToken();
     _configureFirebaseMessaging();
-    debugPrint("widget.isSignOu ${widget.isSignOut}");
-    if (widget.isSignOut == null || widget.isSignOut == false) {
-      initializeApp();
-    }
+    initializeApp();
   }
 
   Future<void> _requestAndPrintFCMToken() async {
@@ -58,56 +50,14 @@ class _DashboardState extends State<Dashboard> {
     debugPrint(
         "FirebaseAuth.instance.currentUser ${FirebaseAuth.instance.currentUser}");
     FirebaseAuth.instance.authStateChanges().listen((User? loggedUser) async {
-      if (loggedUser == null && mounted) {
-        setState(() {
-          isLoading = false;
-        });
-        UserCredential? signedUser = await signInWithGoogle();
-        if (signedUser == null) {
-          setState(() {
-            isUserSignedIn = false;
-          });
-        }
-      } else if (mounted) {
+      if (mounted) {
         setState(() {
           user = loggedUser;
           isLoading = false;
-          isCurrentUser = true;
         });
         getTodoList(loggedUser);
       }
     });
-  }
-
-  Future<void> signIn() async {
-    UserCredential? signedUser = await signInWithGoogle();
-    debugPrint("signedUser $signedUser");
-    if (signedUser != null) {
-      debugPrint(
-          "FirebaseAuth.instance.currentUser ${FirebaseAuth.instance.currentUser}");
-      if (FirebaseAuth.instance.currentUser == null && mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      } else if (mounted) {
-        setState(() {
-          user = FirebaseAuth.instance.currentUser;
-          isLoading = false;
-          isCurrentUser = true;
-        });
-        getTodoList(FirebaseAuth.instance.currentUser);
-      }
-      if (mounted) {
-        setState(() {
-          isUserSignedIn = false;
-        });
-      }
-    } else if (mounted) {
-      setState(() {
-        isLoading = false;
-        isCurrentUser = true;
-      });
-    }
   }
 
   Future getTodoList(User? loggedUser) async {
@@ -117,34 +67,6 @@ class _DashboardState extends State<Dashboard> {
         toTodoList = todoList;
       });
     }
-  }
-
-  Future<UserCredential?> signInWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    if (googleUser == null) {
-      return null;
-    }
-
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
-
-  Future<void> initializeMessaging() async {
-    _firebaseMessaging.requestPermission();
-    _firebaseMessaging.getToken().then((token) {
-      debugPrint('FCM Token: $token');
-    });
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      debugPrint(message.toString());
-      _showNotification(message);
-    });
   }
 
   void _showNotification(RemoteMessage message) async {
@@ -296,7 +218,7 @@ class _DashboardState extends State<Dashboard> {
           ? AppBar(
               title: Padding(
                 padding: const EdgeInsets.symmetric(
-                  vertical: 8.0,
+                  horizontal: 8.0,
                 ),
                 child: Row(
                   children: [
@@ -355,73 +277,28 @@ class _DashboardState extends State<Dashboard> {
               ),
             )
           : null,
-      body: user == null
-          ? Login(
-              handle: signIn,
-            )
-          : toTodoList.isEmpty
-              ? const Center(
-                  child: Text(
-                    Constants.nothingToTodo,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                )
-              : ListView.builder(
-                  itemCount: toTodoList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return buildTodoItem(
-                      context,
-                      index,
-                    );
-                  },
+      body: toTodoList.isEmpty
+          ? const Center(
+              child: Text(
+                Constants.nothingToTodo,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
-    );
-  }
-
-  Widget buildTodoItem(BuildContext context, int index) {
-    return CheckboxListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-      value: toTodoList[index].isFinished,
-      onChanged: (bool? value) {
-        updateStatus(
-          value,
-          toTodoList[index].id,
-        );
-      },
-      controlAffinity: ListTileControlAffinity.leading,
-      title: Text(
-        toTodoList[index].name,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      subtitle: Text(
-        DateFormat(Constants.dateFormat).format(
-          toTodoList[index].createdOn!.toDate(),
-        ),
-      ),
-      secondary: Wrap(
-        children: [
-          customIconButton(
-            Icons.edit,
-            Constants.edit,
-            () => _showUpdateBottomSheet(
-              context,
-              toTodoList[index],
+              ),
+            )
+          : ListView.builder(
+              itemCount: toTodoList.length,
+              itemBuilder: (BuildContext context, int index) {
+                final todo = toTodoList[index];
+                return CustomToDoItem(
+                  todo: todo,
+                  bottomSheetFunction: _showUpdateBottomSheet,
+                  updateFunction: updateStatus,
+                  deleteFunction: deleteTodoItem,
+                );
+              },
             ),
-          ),
-          customIconButton(
-            Icons.delete,
-            Constants.delete,
-            () => deleteTodoItem(
-              toTodoList[index].id,
-            ),
-          )
-        ],
-      ),
     );
   }
 }
