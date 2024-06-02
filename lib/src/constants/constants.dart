@@ -28,7 +28,7 @@ class Constants {
   static const String delete = "Delete";
   static const String explore = "Welcome To ToDo";
   static const String exploreMessage =
-      "To start using the ToDo app, you'll need to sign up using your email address.";
+      "Let's start turning your to-dos into accomplishments together. Sign in now and let the productivity begin!";
   static const String nothingToTodo = "No Things To ToDo";
   static const String signInGoogle = "Sign In With Google";
   static const String userAvatar =
@@ -43,4 +43,50 @@ class Constants {
   static const String no = "No";
   static const String deleteMessage =
       "Are you sure you want to delete this item?";
+  static const String reset = "Reset";
+  static const String signIn = "Sign In";
+  static const String signUp = "Sign Up";
+  static const String email = "Email";
+  static const String enterEmailId = "Enter Email Id";
+  static const String password = "Password";
+  static const String enterPassword = "Enter Password";
+  static const String confirmPassword = "Confirm Password";
+  static const String enterConfirmPassword = "Enter Confirm Password";
+  static const String passwordConfirmPasswordMismatch =
+      "Password and confirm password are not matching";
+  static const String passwordLengthMessage =
+      "Password must contain 8 character";
+  static const String confirmPasswordLengthMessage =
+      "Confirm Password must contain 8 character";
+  static const String enterValidEmail = "Enter a valid email";
+  static const String unableToCreateUser = "Unable to create user now";
+  static const String userCreated = "User created successfully";
+  static const String signInSuccessfully = "Signed in successfully";
+  static const String forgetPassword = "Forgot Password?";
+  static const String forgetPasswordMessage =
+      "We'll send a password reset link to the email associated with your account. Follow the instructions in the email to set a new password and regain access to your account. Your productivity journey awaits! Welcome back to Todo App";
+  static const String invalidUsernamePassword = "Invalid username or password";
+  static const String weakPassword = "The password provided is too weak.";
+  static const String emailAlreadyUsed =
+      "The account already exists for that email.";
+  static const String ifNoAccount = "Are you new user,";
+  static const String createAccount = " Create Account";
+  static const String pickFromGalleryLabel = "Pick from gallery";
+  static const String openCameraLabel = "Open camera";
+  static const String setDisplayName = "Set Display Name";
+  static const String displayNameUnavailable = "Display Name Unavailable";
+  static const String displayName = "Display Name";
+  static const String enterDisplayName = "Enter Display Name";
+  static const String updateDisplayName = "Update Display Name";
+  static const String unableToUpdateDisplayName =
+      "Unable to Update Display Name";
+  static const String updatePassword = "Update Password";
+  static const String enterUpdatePassword = "Enter Update Password";
+  static const String passwordUpdatesSuccessfully =
+      "Password updated successfully";
+  static const String unableToUpdatePassword = "Unable to update password";
+  static const String linkSendToMail = "Link send to mail";
+  static const String platform = 'platform';
+  static const String firebaseScreenViewKey = "screen_view";
+  static const String buttonClick = "Button Click";
 }
