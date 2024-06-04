@@ -120,7 +120,7 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
           );
     } catch (error) {
       showToast(
-        Constants.unableToAddTodo,
+        Constants.unableToSignOut,
       );
     }
   }
@@ -454,7 +454,10 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
           widget.user.displayName == null
               ? GestureDetector(
                   onTap: () {
-                    _showUpdateDisplayNameBottomSheet(context);
+                    if (widget.user.providerData.first.providerId ==
+                        "password") {
+                      _showUpdateDisplayNameBottomSheet(context);
+                    }
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -465,7 +468,10 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
                       ),
                       IconButton(
                         onPressed: () {
-                          _showUpdateDisplayNameBottomSheet(context);
+                          if (widget.user.providerData.first.providerId ==
+                              "password") {
+                            _showUpdateDisplayNameBottomSheet(context);
+                          }
                         },
                         icon: const Icon(
                           Icons.edit,
@@ -477,7 +483,10 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
                 )
               : GestureDetector(
                   onTap: () {
-                    _showUpdateDisplayNameBottomSheet(context);
+                    if (widget.user.providerData.first.providerId ==
+                        "password") {
+                      _showUpdateDisplayNameBottomSheet(context);
+                    }
                   },
                   child: Text(
                     widget.user.displayName ?? "",
@@ -489,18 +498,20 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
             widget.user.email ?? "",
             textAlign: TextAlign.center,
           ),
-          ListTile(
-            title: const Text(
-              Constants.updatePassword,
-              style: TextStyle(fontSize: 18),
-            ),
-            trailing: const Icon(
-              Icons.arrow_forward_ios_rounded,
-            ),
-            onTap: () {
-              _showUpdatePasswordBottomSheet(context);
-            },
-          ),
+          widget.user.providerData.first.providerId == "password"
+              ? ListTile(
+                  title: const Text(
+                    Constants.updatePassword,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                  ),
+                  onTap: () {
+                    _showUpdatePasswordBottomSheet(context);
+                  },
+                )
+              : Container(),
           ListTile(
             title: const Text(
               Constants.darkTheme,

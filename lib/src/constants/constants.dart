@@ -39,6 +39,7 @@ class Constants {
       "https://dhanush623.github.io/todo_privacy_policy.html";
   static const String termsConditions = "Terms & Conditions";
   static const String unableToSignIn = "Unable to Sign in";
+  static const String unableToSignOut = "Unable to Sign Out";
   static const String yes = "Yes";
   static const String no = "No";
   static const String deleteMessage =
