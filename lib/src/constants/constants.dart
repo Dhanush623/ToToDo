@@ -19,6 +19,7 @@ class Constants {
   static const String unableToUpdateTodo = "Unable to update ToDo";
   static const String unableToDeleteTodo = "Unable to delete ToDo";
   static const String todoDetails = "Enter ToDo Details";
+  static const String todoDetailsDescription = "Enter ToDo Description";
   static const String addTodoDetails = "Add ToDo Details";
   static const String enterNotes = "Enter Notes";
   static const String updateTodoDetails = "Update ToDo Details";
@@ -59,6 +60,8 @@ class Constants {
       "Password must contain 8 character";
   static const String confirmPasswordLengthMessage =
       "Confirm Password must contain 8 character";
+  static const String displayNameLengthMessage =
+      "Display Name must not be empty";
   static const String enterValidEmail = "Enter a valid email";
   static const String unableToCreateUser = "Unable to create user now";
   static const String userCreated = "User created successfully";

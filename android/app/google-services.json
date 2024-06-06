@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "4424271195-19ep3q0b1one3npme5ttqclii5c0aoo0.apps.googleusercontent.com",
+          "client_id": "4424271195-4711cqqspsegqfdigd7kb8qeu1voq30c.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.resprotech",
-            "certificate_hash": "1dddaa9916638cc7ac93947749db159f3dd2d728"
+            "certificate_hash": "0950430474a78d027582490a219894aef8a79226"
           }
         },
         {

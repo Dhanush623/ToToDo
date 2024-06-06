@@ -73,10 +73,25 @@ class CustomToDoItem extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      subtitle: Text(
-        DateFormat(Constants.dateFormat).format(
-          todo.createdOn!.toDate(),
-        ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          todo.description != null
+              ? Text(
+                  todo.description!,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              : Container(),
+          Text(
+            DateFormat(Constants.dateFormat).format(
+              todo.createdOn!.toDate(),
+            ),
+          )
+        ],
       ),
       secondary: Wrap(
         children: [

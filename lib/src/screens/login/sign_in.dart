@@ -16,6 +16,7 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   TextEditingController usernameEditingController = TextEditingController();
   TextEditingController passwordEditingController = TextEditingController();
+  TextEditingController displayNameEditingController = TextEditingController();
   TextEditingController confirmPasswordEditingController =
       TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -33,13 +34,18 @@ class _SignInState extends State<SignIn> {
   }
 
   Future<UserCredential?> registerWithEmailAndPassword(
-      String email, String password) async {
+      String email, String password, String displayName) async {
     try {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      if (userCredential.user == null) {
+        showToast(Constants.unableToCreateUser);
+      }
+      User user = userCredential.user!;
+      user.updateDisplayName(displayName);
       return userCredential;
     } on FirebaseAuthException catch (e) {
       debugPrint("**************");
@@ -61,7 +67,11 @@ class _SignInState extends State<SignIn> {
   }
 
   createUser() async {
-    if (!_isEmailValid) {
+    if (displayNameEditingController.text.isEmpty) {
+      showToast(Constants.displayNameLengthMessage);
+      return true;
+    }
+    if (!_isEmailValid || usernameEditingController.text.isEmpty) {
       showToast(Constants.enterValidEmail);
       return true;
     }
@@ -79,9 +89,9 @@ class _SignInState extends State<SignIn> {
       return true;
     }
     UserCredential? userCredential = await registerWithEmailAndPassword(
-      usernameEditingController.text,
-      passwordEditingController.text,
-    );
+        usernameEditingController.text,
+        passwordEditingController.text,
+        displayNameEditingController.text);
     if (userCredential != null) {
       showToast(Constants.userCreated);
       // ignore: use_build_context_synchronously
@@ -101,6 +111,20 @@ class _SignInState extends State<SignIn> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
+            TextField(
+              controller: displayNameEditingController,
+              onChanged: (value) {},
+              decoration: InputDecoration(
+                label: const Text(
+                  Constants.displayName,
+                ),
+                hintText: Constants.enterDisplayName,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+              ),
+            ),
+            spacer(10, 0),
             TextField(
               controller: usernameEditingController,
               onChanged: (value) {

@@ -217,7 +217,7 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
       if (pickedFile != null) {
         File file = File(pickedFile.path);
 
-        uploadAndSetUserPhoto(file, "tested");
+        uploadAndSetUserPhoto(file, widget.user.email ?? widget.user.uid);
 
         // Fetch updated user data to confirm changes
         User updatedUser = FirebaseAuth.instance.currentUser!;
@@ -285,14 +285,14 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
                 ),
                 const SizedBox(height: 10.0),
                 customTextInput(
-                  textEditingController,
-                  null,
-                  null,
-                  (value) {},
-                  Constants.displayName,
-                  Constants.enterDisplayName,
-                  true,
-                ),
+                    textEditingController,
+                    null,
+                    null,
+                    (value) {},
+                    Constants.displayName,
+                    Constants.enterDisplayName,
+                    true,
+                    null),
                 const SizedBox(height: 10.0),
                 customElevatedButton(
                   Constants.updateDisplayName,
@@ -340,14 +340,14 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
                 ),
                 const SizedBox(height: 10.0),
                 customTextInput(
-                  textEditingController,
-                  null,
-                  null,
-                  (value) {},
-                  Constants.updatePassword,
-                  Constants.enterUpdatePassword,
-                  true,
-                ),
+                    textEditingController,
+                    null,
+                    null,
+                    (value) {},
+                    Constants.updatePassword,
+                    Constants.enterUpdatePassword,
+                    true,
+                    null),
                 const SizedBox(height: 10.0),
                 customElevatedButton(
                   Constants.updatePassword,

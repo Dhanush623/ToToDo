@@ -95,8 +95,11 @@ class _DashboardState extends State<Dashboard> {
 
   void _showAddBottomSheet(BuildContext context) async {
     TextEditingController textEditingController = TextEditingController();
+    TextEditingController descriptionEditingController =
+        TextEditingController();
 
     final addItem = await showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
       builder: (BuildContext context) {
         return Container(
@@ -116,22 +119,28 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
                 const SizedBox(height: 10.0),
+                customTextInput(textEditingController, null, null, (value) {},
+                    null, Constants.todoDetails, true, null),
+                const SizedBox(height: 10.0),
                 customTextInput(
-                  textEditingController,
-                  null,
-                  null,
-                  (value) {},
-                  null,
-                  Constants.todoDetails,
-                  true,
-                ),
+                    descriptionEditingController,
+                    null,
+                    null,
+                    (value) {},
+                    null,
+                    Constants.todoDetailsDescription,
+                    true,
+                    3),
                 const SizedBox(height: 10.0),
                 customElevatedButton(
                   Constants.addToTodo,
                   () {
                     Navigator.pop(
                       context,
-                      textEditingController.text,
+                      {
+                        'name': textEditingController.text,
+                        'description': descriptionEditingController.text,
+                      },
                     );
                   },
                 ),
@@ -141,7 +150,9 @@ class _DashboardState extends State<Dashboard> {
         );
       },
     );
-    if (addItem != null && addItem.toString().isNotEmpty) {
+    if (addItem != null &&
+        addItem['name'] != null &&
+        addItem['name'].toString().isNotEmpty) {
       addTodo(addItem, user);
       getTodoList(user!);
     } else {
@@ -167,8 +178,11 @@ class _DashboardState extends State<Dashboard> {
   void _showUpdateBottomSheet(BuildContext context, Todo todo) async {
     TextEditingController textEditingController =
         TextEditingController(text: todo.name);
+    TextEditingController descriptionEditingController =
+        TextEditingController(text: todo.description);
 
     final result = await showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
       builder: (BuildContext context) {
         return Container(
@@ -196,6 +210,18 @@ class _DashboardState extends State<Dashboard> {
                   null,
                   Constants.todoDetails,
                   true,
+                  null,
+                ),
+                const SizedBox(height: 10.0),
+                customTextInput(
+                  descriptionEditingController,
+                  null,
+                  null,
+                  (value) {},
+                  null,
+                  Constants.todoDetailsDescription,
+                  true,
+                  3,
                 ),
                 const SizedBox(height: 10.0),
                 customElevatedButton(
@@ -203,7 +229,10 @@ class _DashboardState extends State<Dashboard> {
                   () {
                     Navigator.pop(
                       context,
-                      textEditingController.text,
+                      {
+                        'name': textEditingController.text,
+                        'description': descriptionEditingController.text,
+                      },
                     );
                   },
                 )
@@ -213,7 +242,9 @@ class _DashboardState extends State<Dashboard> {
         );
       },
     );
-    if (result != null && result.toString().isNotEmpty) {
+    if (result != null &&
+        result['name'] != null &&
+        result['name'].toString().isNotEmpty) {
       updateTodoName(result, user, todo.id);
       getTodoList(user!);
     } else {
@@ -247,7 +278,7 @@ class _DashboardState extends State<Dashboard> {
                             child: Text(
                               user?.displayName == null
                                   ? "${user?.email!.substring(0, 1).toUpperCase()}"
-                                  : "${user?.displayName!.substring(0, 1)}",
+                                  : "${user?.displayName!.substring(0, 1).toUpperCase()}",
                             ),
                           )
                         : CircleAvatar(

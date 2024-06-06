@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Todo {
   final bool isFinished;
   final String name;
+  final String? description;
   final String uid;
   final String? id;
   final Timestamp? createdOn;
@@ -11,6 +12,7 @@ class Todo {
   Todo({
     required this.isFinished,
     required this.name,
+    this.description,
     required this.uid,
     this.id,
     this.createdOn,
@@ -22,6 +24,7 @@ class Todo {
     return Todo(
       isFinished: data?['isFinished'] ?? false,
       name: data?['name'] ?? '',
+      description: data?['description'],
       uid: data?['uid'] ?? '',
       createdOn: data?['createdOn'],
       updatedOn: data?['updatedOn'],

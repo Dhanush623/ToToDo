@@ -9,6 +9,7 @@ Widget customTextInput(
   String? label,
   String hint,
   bool? enabled,
+  int? maxLines,
 ) {
   return TextField(
     controller: controller,
@@ -19,6 +20,7 @@ Widget customTextInput(
         borderRadius: BorderRadius.circular(25.0),
       ),
     ),
+    maxLines: maxLines,
     enabled: enabled,
     keyboardType: textInputType,
     inputFormatters: inputFormatter,

@@ -21,7 +21,7 @@ Future<List<Todo>> getToTodoList(String uid) async {
   return todoList;
 }
 
-Future addTodo(String todo, User? user) async {
+Future addTodo(Map todo, User? user) async {
   CollectionReference todoReference =
       FirebaseFirestore.instance.collection(CollectionConstants.todoList);
   DateTime now = DateTime.now();
@@ -29,7 +29,8 @@ Future addTodo(String todo, User? user) async {
   todoReference
       .add({
         'createdOn': timestamp,
-        'name': todo,
+        'name': todo['name'],
+        'description': todo['description'],
         'isFinished': false,
         'uid': user?.email,
       })
@@ -72,7 +73,7 @@ Future updateTodoStatus(bool? status, User? user, String? docId) async {
       );
 }
 
-Future updateTodoName(String? name, User? user, String? docId) async {
+Future updateTodoName(Map todo, User? user, String? docId) async {
   CollectionReference todoReference =
       FirebaseFirestore.instance.collection(CollectionConstants.todoList);
   DateTime now = DateTime.now();
@@ -81,7 +82,8 @@ Future updateTodoName(String? name, User? user, String? docId) async {
       .doc(docId)
       .set({
         'updatedOn': timestamp,
-        'name': name,
+        'name': todo['name'],
+        'description': todo['description'],
       }, SetOptions(merge: true))
       .then((value) => {
             showToast(
