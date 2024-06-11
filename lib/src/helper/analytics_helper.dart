@@ -2,8 +2,8 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:totodo/src/constants/constants.dart';
 import 'package:totodo/src/helper/platform_helper.dart';
 
-addAnalyticsLogger(String event, Map<String, Object?> parameters) async {
-  parameters[Constants.platform] = getCurrentPlatform();
+addAnalyticsLogger(String event, Map<String, Object>? parameters) async {
+  parameters![Constants.platform] = getCurrentPlatform();
   await FirebaseAnalytics.instance.logEvent(
     name: event,
     parameters: parameters,
