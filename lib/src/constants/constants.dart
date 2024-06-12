@@ -93,4 +93,5 @@ class Constants {
   static const String platform = 'platform';
   static const String firebaseScreenViewKey = "screen_view";
   static const String buttonClick = "Button Click";
+  static const String adUnitId = 'ca-app-pub-8923335269347910/3100687230';
 }

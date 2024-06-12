@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -16,6 +17,7 @@ import 'package:totodo/src/screens/login/login.dart';
 import 'package:totodo/src/screens/login/terms_and_conditions.dart';
 import 'package:totodo/src/widgets/custom_elevated_button.dart';
 import 'package:totodo/src/widgets/custom_text_field.dart';
+import 'package:totodo/src/widgets/my_banner_ad.dart';
 import 'package:totodo/src/widgets/show_toast.dart';
 
 // ignore: must_be_immutable
@@ -382,7 +384,7 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(12),
-        height: 100.0,
+        height: AdSize.banner.height.toDouble() + 100.0,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -395,6 +397,11 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
             ),
             Text(
               "${Constants.copyrightLabel}${DateTime.now().year} ",
+            ),
+            SizedBox(
+              width: AdSize.banner.width.toDouble(),
+              height: AdSize.banner.height.toDouble(),
+              child: const MyBannerAdWidget(),
             ),
           ],
         ),

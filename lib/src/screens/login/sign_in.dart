@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:totodo/src/constants/constants.dart';
 import 'package:totodo/src/helper/analytics_helper.dart';
 import 'package:totodo/src/services/email_validator.dart';
+import 'package:totodo/src/widgets/my_banner_ad.dart';
 import 'package:totodo/src/widgets/show_toast.dart';
 import 'package:totodo/src/widgets/spacer.dart';
 
@@ -225,6 +227,12 @@ class _SignInState extends State<SignIn> {
                   ),
                 ],
               ),
+            ),
+            const Spacer(),
+            SizedBox(
+              width: AdSize.banner.width.toDouble(),
+              height: AdSize.banner.height.toDouble(),
+              child: const MyBannerAdWidget(),
             ),
           ],
         ),

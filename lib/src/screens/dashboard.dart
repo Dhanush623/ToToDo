@@ -12,6 +12,7 @@ import 'package:totodo/src/widgets/custom_elevated_button.dart';
 import 'package:totodo/src/widgets/custom_icon_button.dart';
 import 'package:totodo/src/widgets/custom_text_field.dart';
 import 'package:totodo/src/widgets/custom_todo_item.dart';
+import 'package:totodo/src/widgets/my_banner_ad.dart';
 import 'package:totodo/src/widgets/show_toast.dart';
 
 class Dashboard extends StatefulWidget {
@@ -26,8 +27,6 @@ class _DashboardState extends State<Dashboard> {
   bool isLoading = true;
   List<Todo> toTodoList = [];
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  final String adUnitId = "ca-app-pub-8923335269347910/2875457961";
-  BannerAd? _bannerAd;
 
   @override
   void initState() {
@@ -40,36 +39,6 @@ class _DashboardState extends State<Dashboard> {
       widget.runtimeType.toString(),
       "Dashboard",
     );
-    _loadAd();
-  }
-
-  /// Loads a banner ad.
-  void _loadAd() {
-    final bannerAd = BannerAd(
-      size: AdSize(width: 100, height: 200),
-      adUnitId: adUnitId,
-      request: const AdRequest(),
-      listener: BannerAdListener(
-        // Called when an ad is successfully received.
-        onAdLoaded: (ad) {
-          if (!mounted) {
-            ad.dispose();
-            return;
-          }
-          setState(() {
-            _bannerAd = ad as BannerAd;
-          });
-        },
-        // Called when an ad request failed.
-        onAdFailedToLoad: (ad, error) {
-          debugPrint('BannerAd failed to load: $error');
-          ad.dispose();
-        },
-      ),
-    );
-
-    // Start loading.
-    bannerAd.load();
   }
 
   Future<void> _requestAndPrintFCMToken() async {
@@ -354,30 +323,39 @@ class _DashboardState extends State<Dashboard> {
               ),
             )
           : null,
-      body: _bannerAd != null
-          ? AdWidget(ad: _bannerAd!)
-          : toTodoList.isEmpty
-              ? const Center(
-                  child: Text(
-                    Constants.nothingToTodo,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                )
-              : ListView.builder(
-                  itemCount: toTodoList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final todo = toTodoList[index];
-                    return CustomToDoItem(
-                      todo: todo,
-                      bottomSheetFunction: _showUpdateBottomSheet,
-                      updateFunction: updateStatus,
-                      deleteFunction: deleteTodoItem,
-                    );
-                  },
+      body: toTodoList.isEmpty
+          ? const Center(
+              child: Text(
+                Constants.nothingToTodo,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
+              ),
+            )
+          : Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: toTodoList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final todo = toTodoList[index];
+                      return CustomToDoItem(
+                        todo: todo,
+                        bottomSheetFunction: _showUpdateBottomSheet,
+                        updateFunction: updateStatus,
+                        deleteFunction: deleteTodoItem,
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: AdSize.banner.width.toDouble(),
+                  height: AdSize.banner.height.toDouble(),
+                  child: const MyBannerAdWidget(),
+                ),
+              ],
+            ),
     );
   }
 }

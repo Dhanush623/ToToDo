@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:totodo/src/constants/constants.dart';
 import 'package:totodo/src/helper/analytics_helper.dart';
+import 'package:totodo/src/widgets/my_banner_ad.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class TermsAndConditions extends StatelessWidget {
@@ -38,7 +40,20 @@ class TermsAndConditions extends StatelessWidget {
           Constants.termsConditions,
         ),
       ),
-      body: WebViewWidget(controller: controller),
+      body: Column(
+        children: [
+          Expanded(
+            child: WebViewWidget(
+              controller: controller,
+            ),
+          ),
+          SizedBox(
+            width: AdSize.banner.width.toDouble(),
+            height: AdSize.banner.height.toDouble(),
+            child: const MyBannerAdWidget(),
+          ),
+        ],
+      ),
     );
   }
 }
